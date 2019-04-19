@@ -1,6 +1,6 @@
 body {
-  margin: 2em;
-  padding: 0;
+  margin: 0;
+  padding: 1em;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -13,7 +13,39 @@ aside > li {
   margin-bottom: 0.5em;
 }
 
+.today {
+  display: flex;
+  flex-direction: column;
+}
+
+.cameraImg {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1em;
+}
+
 .name {
   font-weight: 600;
   color: #424242;
+}
+
+@media (min-width: 600px) {
+  .today {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .cameraImg {
+    margin: 0 1em 1em 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  body {
+    padding: 2em;
+  }
+
+  .cameraImg {
+    width: 60vw;
+  }
 }

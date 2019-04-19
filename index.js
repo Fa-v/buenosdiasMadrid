@@ -1,5 +1,8 @@
 (function() {
   const madridData = {};
+  const todaySection = document.getElementById('today');
+  const aside = document.createElement('aside');
+
   function ajaxRequest(url) {
     return new Promise(function(resolve, reject) {
       const request = new XMLHttpRequest();
@@ -48,10 +51,8 @@
   }
 
   function renderPollutionData(data) {
-    const todaySection = document.getElementById('today');
-    const aside = document.createElement('aside');
-
     let template = '';
+
     for (const key in data) {
       if (typeof data[key] === 'object') {
         template = `
@@ -64,13 +65,32 @@
       }
       aside.insertAdjacentHTML('afterbegin', template);
     }
+
     todaySection.append(aside);
+  }
+
+  function getRandomCamera(data) {
+    const min = Math.ceil(0);
+    const max = Math.floor(data.length);
+    const cameraNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    return `http://informo.munimadrid.es/cameras/Camara${
+      data[cameraNumber]
+    }.jpg`;
+  }
+
+  function renderTrafficCamera(data) {
+    let camera = `<img class="cameraImg" alt="camaras de tráfico" src="${getRandomCamera(
+      data
+    )}"/>`;
+
+    todaySection.insertAdjacentHTML('afterbegin', camera);
   }
 
   getInitialData()
     .then(data => {
       renderPollutionData(data[0]);
-
+      renderTrafficCamera(data[5]);
       return data;
     })
     .catch(error => console.log(error));
