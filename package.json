@@ -1,0 +1,8 @@
+{
+  "name": "buenosdiasmadrid",
+  "version": "1.0.0",
+  "description": "Nuestra Aplicación Buenos Días, Madrid! Nos da información del clima, calidad del aire y cámaras de tráfico en Madrid",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
+}
