@@ -34,7 +34,13 @@
     const arganzuela = `${aireMad}station/P002`;
     const clima = `${aireMad}weather/global`;
     const gripe = `${aireMad}flu`;
-    const endPoints = [plazaEsp, arganzuela, clima, gripe];
+    const endPoints = [
+      plazaEsp,
+      arganzuela,
+      clima,
+      gripe,
+      'cammeraNumbers.json'
+    ];
 
     return Promise.all(endPoints.map(ajaxRequest));
   }
