@@ -30,12 +30,14 @@
 
   function getInitialData() {
     const aireMad = 'http://airemad.com/api/v1/';
-    const plazaEsp = `${aireMad}station/S004`;
-    const arganzuela = `${aireMad}station/P002`;
+    const plazaEsPollution = `${aireMad}pollution/S004`;
+    const plazaEsAcustic = `${aireMad}acustic/S004`;
+    const arganzuela = `${aireMad}pollen/P002`;
     const clima = `${aireMad}weather/global`;
     const gripe = `${aireMad}flu`;
     const endPoints = [
-      plazaEsp,
+      plazaEsPollution,
+      plazaEsAcustic,
       arganzuela,
       clima,
       gripe,
