@@ -41,17 +41,38 @@
       arganzuela,
       clima,
       gripe,
-      'cammeraNumbers.json'
+      'scripts/cammeraNumbers.json'
     ];
 
     return Promise.all(endPoints.map(ajaxRequest));
   }
 
+  function renderPollutionData(data) {
+    const todaySection = document.getElementById('today');
+    const aside = document.createElement('aside');
+
+    let template = '';
+    for (const key in data) {
+      if (typeof data[key] === 'object') {
+        template = `
+          <li><span class="name">${data[key].parameter} (${
+          data[key].abrebiation
+        })</span>: ${
+          data[key].values[0].valor
+        } &#181;g/m<sup>3</sup> medido por ${data[key].technique}</li>
+        `;
+      }
+      aside.insertAdjacentHTML('afterbegin', template);
+    }
+    todaySection.append(aside);
+  }
+
   getInitialData()
     .then(data => {
-      console.log('data geInitalData', data);
+      renderPollutionData(data[0]);
+
       return data;
     })
-    .catch(error => console.log(data));
+    .catch(error => console.log(error));
   return madridData;
 })();

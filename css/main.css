@@ -7,3 +7,13 @@ body {
 * {
   box-sizing: border-box;
 }
+
+aside > li {
+  list-style: none;
+  margin-bottom: 0.5em;
+}
+
+.name {
+  font-weight: 600;
+  color: #424242;
+}
