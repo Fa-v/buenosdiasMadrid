@@ -97,10 +97,59 @@
     }
   }
 
+  function renderFluData(fluData) {
+    let template = '';
+    const centinela = fluData.detecciones_totales.detecciones_centinela;
+    const noCentinela = fluData.detecciones_totales.detecciones_no_centinela;
+
+    template = `
+      <li>Fecha del informe: ${fluData.informe_fecha}, semana: ${
+      fluData.semana
+    }</li>
+      <li>Nivel de difusión: ${fluData.madrid.nivel_difusion}</li>
+      <li>Nivel de intensidad: ${fluData.madrid.nivel_intensidad}</li>
+      <li>Muestras Examinadas: ${
+        fluData.madrid.muestras_centinelas_examinadas
+      }</li>
+      <li>Muestras positivas: ${
+        fluData.madrid.porcentaje_muestras_positivas
+      }</li>
+      <li>Detecciones centinela: AH3: ${
+        centinela.AH3
+      } <span class="divider">|</span> AH3N2: ${
+      centinela.AH3N2
+    } <span class="divider">|</span> ANS: ${
+      centinela.ANS
+    } <span class="divider">|</span> AnH1: ${
+      centinela.AnH1
+    } <span class="divider">|</span> AnH1N1: ${
+      centinela.AnH1N1
+    } <span class="divider">|</span> B: ${
+      centinela.B
+    } <span class="divider">|</span> C: ${centinela.C}</li>
+      <li>Detecciones no centinela: AH3: ${
+        noCentinela.AH3
+      } <span class="divider">|</span> AH3N2: ${
+      noCentinela.AH3N2
+    } <span class="divider">|</span> ANS: ${
+      noCentinela.ANS
+    } <span class="divider">|</span> AnH1: ${
+      noCentinela.AnH1
+    } <span class="divider">|</span> AnH1N1: ${
+      noCentinela.AnH1N1
+    } <span class="divider">|</span> B: ${
+      noCentinela.B
+    } <span class="divider">|</span> C: ${noCentinela.C}</li>
+      `;
+
+    aside.insertAdjacentHTML('beforeend', template);
+  }
+
   getInitialData()
     .then(data => {
       renderPollutionData(data[0]);
       renderPollenData(data[2].mediciones);
+      renderFluData(data[4]);
       renderTrafficCamera(data[5]);
       return data;
     })

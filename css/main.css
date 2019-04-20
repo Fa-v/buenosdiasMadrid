@@ -29,6 +29,10 @@ aside > li {
   color: #424242;
 }
 
+.divider {
+  color: #c7c7c7;
+}
+
 @media (min-width: 600px) {
   .today {
     flex-direction: row;
