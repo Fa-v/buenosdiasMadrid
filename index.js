@@ -87,9 +87,20 @@
     todaySection.insertAdjacentHTML('afterbegin', camera);
   }
 
+  function renderPollenData(mediciones) {
+    let template = '';
+    for (const key in mediciones) {
+      template = `
+      <li>${key}: ${mediciones[key].valor}, ${mediciones[key].resumen}</li>
+    `;
+      aside.insertAdjacentHTML('beforeend', template);
+    }
+  }
+
   getInitialData()
     .then(data => {
       renderPollutionData(data[0]);
+      renderPollenData(data[2].mediciones);
       renderTrafficCamera(data[5]);
       return data;
     })
