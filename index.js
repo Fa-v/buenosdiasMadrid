@@ -19,7 +19,6 @@
       };
 
       request.onerror = function() {
-        console.log(request.status, request.statusText);
         reject({
           status: request.status,
           statusText: request.statusText
@@ -99,6 +98,108 @@
     }
   }
 
+  function chunk(array, size) {
+    const chunkedArray = [];
+    let index = 0;
+    while (index < array.length) {
+      chunkedArray.push(array.slice(index, size + index));
+      index += size;
+    }
+    return chunkedArray;
+  }
+
+  function fiveDayForecast(data) {
+    var today = new Date();
+    var day = today.getDay();
+    var todayData = [];
+    var restOfDays = [];
+
+    data.forEach(function(date) {
+      var today2 = new Date(date.dt_txt);
+      var day2 = today2.getDay();
+      if (day === day2) {
+        todayData.push(date);
+      } else {
+        restOfDays.push(date);
+      }
+    });
+    var chunks = chunk(restOfDays, 8);
+    return [
+      chunks[0][2],
+      chunks[1][2],
+      chunks[2][2],
+      chunks[3][2],
+      chunks[4][2]
+    ].filter(Boolean);
+  }
+
+  function forecast(data) {
+    let forecast = fiveDayForecast(data);
+    const options = {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    };
+
+    return forecast
+      .map(function(day) {
+        const date = new Date(day.dt_txt);
+        const today = date.toLocaleDateString('es-ES', options);
+        return `
+        <div>
+          <h4 class="weather-description">${today}</h4>
+          <p class="weather-description">${
+            day.weather[0].description
+          }<i class="wi wi-owm-${day.weather[0].id}"></i></p>
+          <p>Min: ${day.main.temp_min}<sup>o</sup>C</p>
+          <p>Max: ${day.main.temp_max}<sup>o</sup>C</p>
+        </div>
+      `;
+      })
+      .join('');
+  }
+
+  function mainWeather(weatherData) {
+    const weatherDescription = weatherData.weather[0];
+    const mainWeatherSec = weatherData.main;
+    const wind = weatherData.wind;
+    const date = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    const today = date.toLocaleDateString('es-ES', options);
+
+    let template = `
+    <div class="main-weather-section">
+    <h3 class="weather-description">${today}</h3>
+    <div class="weather-mainTitle">
+    <p class="weather-description">${weatherDescription.description}</p>
+    <i class="wi wi-owm-${weatherDescription.id} main-icon"></i>
+    </div>
+    <p>Min: ${mainWeatherSec.temp_min}<sup>o</sup>C</p>
+    <p>Max: ${mainWeatherSec.temp_max}<sup>o</sup>C</p>
+    <p>Humedad: ${mainWeatherSec.humidity}</p>
+    <p>Viento: ${wind.speed} k/h</p>
+    </div>
+    `;
+    return template;
+  }
+
+  function renderWeatherData(data) {
+    const weatherSec = document.createElement('div');
+    const forecastSec = document.getElementById('forecast-section');
+    weatherSec.classList.add('weather');
+    const todayTemplate = mainWeather(data[0]);
+    const forecastTemplate = forecast(data);
+
+    weatherSec.insertAdjacentHTML('afterbegin', todayTemplate);
+    forecastSec.insertAdjacentHTML('beforeend', forecastTemplate);
+    mainSection.append(weatherSec);
+  }
+
   function renderFluData(fluData) {
     const fluSec = document.querySelector('.flu');
     const sectionTitle = `<h3>Gripe</h3>`;
@@ -170,6 +271,7 @@
       renderPollutionData(data[0]);
       renderAcousticData(data[1].total);
       renderPollenData(data[2].mediciones);
+      renderWeatherData(data[3].list);
       renderFluData(data[4]);
       renderTrafficCamera(data[5]);
       return data;
