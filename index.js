@@ -1,7 +1,6 @@
 (function() {
   const madridData = {};
-  const todaySection = document.getElementById('today');
-  const aside = document.createElement('aside');
+  const mainSection = document.getElementById('main-section');
 
   function ajaxRequest(url) {
     return new Promise(function(resolve, reject) {
@@ -51,34 +50,101 @@
   }
 
   function renderPollutionData(data) {
+    const pollutionSec = document.querySelector('.pollution');
+    const sectionTitle = `<h3>Polución</h3>`;
+    pollutionSec.insertAdjacentHTML('afterbegin', sectionTitle);
     let template = '';
 
     for (const key in data) {
       if (typeof data[key] === 'object') {
         template = `
-          <li><span class="name">${data[key].parameter} (${
+          <p><span class="name">${data[key].parameter} (${
           data[key].abrebiation
         })</span>: ${
           data[key].values[0].valor
-        } &#181;g/m<sup>3</sup> medido por ${data[key].technique}</li>
+        } &#181;g/m<sup>3</sup> medido por ${data[key].technique}</p>
         `;
       }
-      aside.insertAdjacentHTML('afterbegin', template);
+      pollutionSec.insertAdjacentHTML('beforeend', template);
     }
-
-    todaySection.append(aside);
   }
 
   function renderAcousticData(data) {
+    const noiseSec = document.querySelector('.noise');
+    const sectionTitle = `<h3>Ruido</h3>`;
+    noiseSec.insertAdjacentHTML('afterbegin', sectionTitle);
     let template = '';
+
     for (const key in data) {
       if (key !== 'date') {
         template = `
-          <li>${key}: ${data[key]}</li>`;
+          <p>${key}: ${data[key]}</p>`;
 
-        aside.insertAdjacentHTML('beforeend', template);
+        noiseSec.insertAdjacentHTML('beforeend', template);
       }
     }
+  }
+
+  function renderPollenData(mediciones) {
+    const pollenSec = document.querySelector('.pollen');
+    const sectionTitle = `<h3>Polen</h3>`;
+    pollenSec.insertAdjacentHTML('afterbegin', sectionTitle);
+    let template = '';
+
+    for (const key in mediciones) {
+      template = `
+      <p>${key}: ${mediciones[key].valor}, ${mediciones[key].resumen}</p>
+    `;
+      pollenSec.insertAdjacentHTML('beforeend', template);
+    }
+  }
+
+  function renderFluData(fluData) {
+    const fluSec = document.querySelector('.flu');
+    const sectionTitle = `<h3>Gripe</h3>`;
+    fluSec.insertAdjacentHTML('afterbegin', sectionTitle);
+    let template = '';
+    const centinela = fluData.detecciones_totales.detecciones_centinela;
+    const noCentinela = fluData.detecciones_totales.detecciones_no_centinela;
+
+    template = `
+      <p>Fecha del informe: ${fluData.informe_fecha}</p>
+      <p>semana: ${fluData.semana}</p>
+      <p>Nivel de difusión: ${fluData.madrid.nivel_difusion}</p>
+      <p>Nivel de intensidad: ${fluData.madrid.nivel_intensidad}</p>
+      <p>Muestras Examinadas: ${
+        fluData.madrid.muestras_centinelas_examinadas
+      }</p>
+      <p>Muestras positivas: ${fluData.madrid.porcentaje_muestras_positivas}</p>
+      <h4>Detecciones centinela:</h4> <p>AH3: ${
+        centinela.AH3
+      } <span class="divider">|</span> AH3N2: ${
+      centinela.AH3N2
+    } <span class="divider">|</span> ANS: ${
+      centinela.ANS
+    } <span class="divider">|</span> AnH1: ${
+      centinela.AnH1
+    } <span class="divider">|</span> AnH1N1: ${
+      centinela.AnH1N1
+    } <span class="divider">|</span> B: ${
+      centinela.B
+    } <span class="divider">|</span> C: ${centinela.C}</p>
+      <h4>Detecciones no centinela:</h4> <p>AH3: ${
+        noCentinela.AH3
+      } <span class="divider">|</span> AH3N2: ${
+      noCentinela.AH3N2
+    } <span class="divider">|</span> ANS: ${
+      noCentinela.ANS
+    } <span class="divider">|</span> AnH1: ${
+      noCentinela.AnH1
+    } <span class="divider">|</span> AnH1N1: ${
+      noCentinela.AnH1N1
+    } <span class="divider">|</span> B: ${
+      noCentinela.B
+    } <span class="divider">|</span> C: ${noCentinela.C}</p>
+      `;
+
+    fluSec.insertAdjacentHTML('beforeend', template);
   }
 
   function getRandomCamera(data) {
@@ -96,65 +162,7 @@
       data
     )}"/>`;
 
-    todaySection.insertAdjacentHTML('afterbegin', camera);
-  }
-
-  function renderPollenData(mediciones) {
-    let template = '';
-    for (const key in mediciones) {
-      template = `
-      <li>${key}: ${mediciones[key].valor}, ${mediciones[key].resumen}</li>
-    `;
-      aside.insertAdjacentHTML('beforeend', template);
-    }
-  }
-
-  function renderFluData(fluData) {
-    let template = '';
-    const centinela = fluData.detecciones_totales.detecciones_centinela;
-    const noCentinela = fluData.detecciones_totales.detecciones_no_centinela;
-
-    template = `
-      <li>Fecha del informe: ${fluData.informe_fecha}, semana: ${
-      fluData.semana
-    }</li>
-      <li>Nivel de difusión: ${fluData.madrid.nivel_difusion}</li>
-      <li>Nivel de intensidad: ${fluData.madrid.nivel_intensidad}</li>
-      <li>Muestras Examinadas: ${
-        fluData.madrid.muestras_centinelas_examinadas
-      }</li>
-      <li>Muestras positivas: ${
-        fluData.madrid.porcentaje_muestras_positivas
-      }</li>
-      <li>Detecciones centinela: AH3: ${
-        centinela.AH3
-      } <span class="divider">|</span> AH3N2: ${
-      centinela.AH3N2
-    } <span class="divider">|</span> ANS: ${
-      centinela.ANS
-    } <span class="divider">|</span> AnH1: ${
-      centinela.AnH1
-    } <span class="divider">|</span> AnH1N1: ${
-      centinela.AnH1N1
-    } <span class="divider">|</span> B: ${
-      centinela.B
-    } <span class="divider">|</span> C: ${centinela.C}</li>
-      <li>Detecciones no centinela: AH3: ${
-        noCentinela.AH3
-      } <span class="divider">|</span> AH3N2: ${
-      noCentinela.AH3N2
-    } <span class="divider">|</span> ANS: ${
-      noCentinela.ANS
-    } <span class="divider">|</span> AnH1: ${
-      noCentinela.AnH1
-    } <span class="divider">|</span> AnH1N1: ${
-      noCentinela.AnH1N1
-    } <span class="divider">|</span> B: ${
-      noCentinela.B
-    } <span class="divider">|</span> C: ${noCentinela.C}</li>
-      `;
-
-    aside.insertAdjacentHTML('beforeend', template);
+    mainSection.insertAdjacentHTML('afterbegin', camera);
   }
 
   getInitialData()

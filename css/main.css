@@ -7,15 +7,23 @@ body {
 * {
   box-sizing: border-box;
 }
-
-aside > li {
-  list-style: none;
-  margin-bottom: 0.5em;
-}
-
 .today {
   display: flex;
   flex-direction: column;
+}
+
+.airSection {
+  display: flex;
+  flex-flow: column;
+}
+
+.pollution,
+.noise,
+.pollen,
+.flu {
+  background: #eee;
+  padding: 1em;
+  margin-bottom: 1em;
 }
 
 .cameraImg {
@@ -30,26 +38,40 @@ aside > li {
 }
 
 .divider {
-  color: #c7c7c7;
+  color: #424242;
+}
+
+.wi {
+  font-size: 4em;
+  padding: 0 0.5em;
 }
 
 @media (min-width: 600px) {
-  .today {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
   .cameraImg {
     margin: 0 1em 1em 0;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
   body {
     padding: 2em;
   }
 
   .cameraImg {
     width: 60vw;
+  }
+
+  .airSection {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+
+  .pollution,
+  .noise,
+  .pollen,
+  .flu {
+    width: 340px;
+    margin-bottom: 0;
   }
 }
