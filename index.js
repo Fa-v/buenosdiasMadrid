@@ -69,6 +69,18 @@
     todaySection.append(aside);
   }
 
+  function renderAcousticData(data) {
+    let template = '';
+    for (const key in data) {
+      if (key !== 'date') {
+        template = `
+          <li>${key}: ${data[key]}</li>`;
+
+        aside.insertAdjacentHTML('beforeend', template);
+      }
+    }
+  }
+
   function getRandomCamera(data) {
     const min = Math.ceil(0);
     const max = Math.floor(data.length);
@@ -148,6 +160,7 @@
   getInitialData()
     .then(data => {
       renderPollutionData(data[0]);
+      renderAcousticData(data[1].total);
       renderPollenData(data[2].mediciones);
       renderFluData(data[4]);
       renderTrafficCamera(data[5]);
