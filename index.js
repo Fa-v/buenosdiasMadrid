@@ -2,6 +2,12 @@
   const madridData = {};
   const mainSection = document.getElementById('main-section');
 
+  /**
+   * Fetches data from airMadrid API and traffic cameras
+   * @param {String} url
+   * @this window
+   * @returns {Promise}
+   */
   function ajaxRequest(url) {
     return new Promise(function(resolve, reject) {
       const request = new XMLHttpRequest();
@@ -29,6 +35,12 @@
     });
   }
 
+  /**
+   * Creates an array with the different endpoints to fetch the data from the
+   * airMadrid API and the camera numbers file.
+   * @this window
+   * @returns {Promise}
+   */
   function getInitialData() {
     const aireMad = 'http://airemad.com/api/v1/';
     const plazaEsPollution = `${aireMad}pollution/S004`;
@@ -48,6 +60,12 @@
     return Promise.all(endPoints.map(ajaxRequest));
   }
 
+  /**
+   * Extracts the pollution values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderPollutionData(data) {
     const pollutionSec = document.querySelector('.pollution');
     const sectionTitle = `<h3>Polución</h3>`;
@@ -68,6 +86,12 @@
     }
   }
 
+  /**
+   * Extracts the acoustic values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderAcousticData(data) {
     const noiseSec = document.querySelector('.noise');
     const sectionTitle = `<h3>Ruido</h3>`;
@@ -84,6 +108,12 @@
     }
   }
 
+  /**
+   * Extracts the pollen values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderPollenData(mediciones) {
     const pollenSec = document.querySelector('.pollen');
     const sectionTitle = `<h3>Polen</h3>`;
@@ -98,6 +128,14 @@
     }
   }
 
+  /**
+   * Creates n-item chunks from an array of objects
+   * @param {Array} array of forecast objects
+   * @param {Number} number the size we want the chunks
+   * @this Window
+   * @see {@link https://medium.com/@Dragonza/four-ways-to-chunk-an-array-e19c889eac4}
+   * @returns {Array} with arrays of n objects each
+   */
   function chunk(array, size) {
     const chunkedArray = [];
     let index = 0;
@@ -105,9 +143,17 @@
       chunkedArray.push(array.slice(index, size + index));
       index += size;
     }
+
     return chunkedArray;
   }
 
+  /**
+   * Creates two different arrays, one with today's weather data and the other,
+   * with the next five-day weather forecast
+   * @param {Object} data response object
+   * @this Window
+   * @returns {Array} with the 6AM weather forecast for the next five days
+   */
   function fiveDayForecast(data) {
     var today = new Date();
     var day = today.getDay();
@@ -133,6 +179,12 @@
     ].filter(Boolean);
   }
 
+  /**
+   * Extracts the five-day forecast values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {String} template
+   */
   function forecast(data) {
     let forecast = fiveDayForecast(data);
     const options = {
@@ -159,6 +211,12 @@
       .join('');
   }
 
+  /**
+   * Extracts the current day weather values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {String} template
+   */
   function mainWeather(weatherData) {
     const weatherDescription = weatherData.weather[0];
     const mainWeatherSec = weatherData.main;
@@ -188,6 +246,13 @@
     return template;
   }
 
+  /**
+   * Creates the main sections (main section, forecast section and weather
+   * section) in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderWeatherData(data) {
     const weatherSec = document.createElement('div');
     const forecastSec = document.getElementById('forecast-section');
@@ -200,6 +265,12 @@
     mainSection.append(weatherSec);
   }
 
+  /**
+   * Extracts the flu values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderFluData(fluData) {
     const fluSec = document.querySelector('.flu');
     const sectionTitle = `<h3>Gripe</h3>`;
@@ -248,6 +319,12 @@
     fluSec.insertAdjacentHTML('beforeend', template);
   }
 
+  /**
+   * Generates a random number to get a random image from the traffic cameras
+   * @param {Object} data response object
+   * @this Window
+   * @returns {String} link to the random traffic camera
+   */
   function getRandomCamera(data) {
     const min = Math.ceil(0);
     const max = Math.floor(data.length);
@@ -258,6 +335,12 @@
     }.jpg`;
   }
 
+  /**
+   * Extracts the traffic cameras values to be painted in the DOM
+   * @param {Object} data response object
+   * @this Window
+   * @returns {void}
+   */
   function renderTrafficCamera(data) {
     let camera = `<img class="cameraImg" alt="camaras de tráfico" src="${getRandomCamera(
       data
@@ -266,6 +349,11 @@
     mainSection.insertAdjacentHTML('afterbegin', camera);
   }
 
+  /**
+   * Processes the results from the AJAX petition
+   * @this Window
+   * @returns {Object} data the response from the AJAX petition
+   */
   getInitialData()
     .then(data => {
       renderPollutionData(data[0]);
